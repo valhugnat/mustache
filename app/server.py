@@ -13,6 +13,7 @@ def format_predictions(predictions, threshold=0.55):
         if predictions["detection_scores"][i] > threshold/100:
             x, y, w, h = bbox
             cv2.rectangle(image, (y, x) , (h, w), (255,0,0), 2)
+            cv2.putText(image, 'Mustache 🥸', (y, x-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
     return image
 
 if __name__ == "__main__":
