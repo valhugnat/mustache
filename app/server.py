@@ -1,8 +1,9 @@
 import streamlit as st
 import numpy as np
 from picsellia import Client 
-from PIL import Image
+from PIL import Image, ExifTags
 import cv2
+from pillow_heif import register_heif_opener
 
 
 def format_predictions(predictions, threshold=0.55):
@@ -15,14 +16,17 @@ def format_predictions(predictions, threshold=0.55):
     return image
 
 if __name__ == "__main__":
+    register_heif_opener()
+
     st.title('Happy Movember to all of you 😃 🥸')
     st.text('Ok, the game is simple, upload a selfie now, and enjoy 😃')
     st.text('Do not hesitate to screenshot and share the selfie to promote Movember')
     deployment_name= "mustache-detection" #st.text_input(label="Please enter your deployment name")
     model = Client(organization_name='ValentinP').get_deployment(deployment_name)
-    img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+    img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg", "HEIC"])
     if img_file_buffer is not None:
         image = Image.open(img_file_buffer).convert('RGB')
+        
         image.save('img.jpg')
         predictions = model.predict('img.jpg')
         conf = st.slider('CONFIDENCE?', 0, 100, 1)
